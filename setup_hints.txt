@@ -1,0 +1,14 @@
+set up the env.: 
+    python -m venv .venv
+activate it: 
+    .venv\Scripts\Activate.ps1
+Once all required packages are installed, generate the requirements.txt file by running: 
+    pip freeze > requirements.txt
+
+When setting up the project on a new system, install all dependencies using: 
+    pip install -r requirements.txt
+
+
+
+:D 
+https://www.geeksforgeeks.org/python/how-to-create-requirements-txt-file-in-python/
