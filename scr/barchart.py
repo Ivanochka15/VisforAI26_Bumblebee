@@ -48,6 +48,7 @@ print(f"Baseline overall accuracy: {baseline_overall:.2f}%")
 print(f"Wording changes overall accuracy: {wording_overall:.2f}%")
 print(f"Difference: {wording_overall - baseline_overall:+.2f} percentage points")
 
+### PLOT 1
 ### stacked bar chart ###
 
 classes = sorted(
@@ -111,4 +112,46 @@ ax.grid(axis="x", linestyle="--", alpha=0.4)
 
 plt.tight_layout()
 plt.savefig("accuracy_comparison.png", dpi=300)
+plt.show()
+
+### PLOT 2
+### classes with the largest |W% - B%| ###
+
+from collections import Counter
+class_totals = Counter(row["actual_class"] for row in baseline_results)
+
+diffs = {
+    class_name: (wording_accuracies[class_name] - baseline_accuracies[class_name]) * 100
+    for class_name in baseline_accuracies
+}
+top_classes = sorted(diffs, key=lambda c: abs(diffs[c]))[-25:]   # 25 wiht the largest differences in % changes
+
+fig2, ax2 = plt.subplots(figsize=(8, 8))
+y2 = np.arange(len(top_classes))
+
+for i, class_name in enumerate(top_classes):
+    diff = diffs[class_name]
+    n_images = round(abs(diff) / 100 * class_totals[class_name])
+    ax2.barh(i, abs(diff), color="orange" if diff > 0 else "green")
+    ax2.text(
+        abs(diff) + 0.3,
+        i,
+        f"{diff:+.0f}% (images)",
+        va="center",
+        fontsize=7
+    )
+
+ax2.set_yticks(y2)
+ax2.set_yticklabels(top_classes, fontsize=8)
+ax2.set_xlim(0, max(abs(diffs[c]) for c in top_classes) + 10)
+ax2.set_xlabel("|Wording % − Baseline %| (percentage points)")
+ax2.set_ylabel("Class")
+ax2.grid(axis="x", linestyle="--", alpha=0.4)
+
+from matplotlib.patches import Patch
+ax2.legend(handles=[Patch(color="orange", label="Wording better than baseline"),
+                    Patch(color="green", label="Baseline better than wording")], loc="lower right")
+
+plt.tight_layout()
+plt.savefig("top_accuracy_differences.png", dpi=300)
 plt.show()
