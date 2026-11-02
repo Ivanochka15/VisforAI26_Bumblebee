@@ -79,7 +79,7 @@ for i, (baseline, wording) in enumerate(
             baseline - wording,
             left=wording,
             color="green",
-            label="Baseline advantage" if i == 0 else ""
+            label="Baseline" if i == 0 else ""
         )
     else:
         ax.barh(i, baseline, color="green", label="Baseline" if i == 0 else "")
@@ -88,7 +88,7 @@ for i, (baseline, wording) in enumerate(
             wording - baseline,
             left=baseline,
             color="orange",
-            label="Wording changes advantage" if i == 0 else ""
+            label="Wording changes" if i == 0 else ""
         )
 
     ax.text(
